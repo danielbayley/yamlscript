@@ -51,7 +51,7 @@ defn download-releases(version):
       when-not fs-e(file):
         say: "Downloading $file"
         url =: "$releases-url/download/$version/$file"
-        res =: sh("wget -q $url")
+        res =: sh("curl --silent --location $url --output $file")
         when res.exit:N.?:
           die: "Download of '$url' failed:\n$(res.err)"
 
