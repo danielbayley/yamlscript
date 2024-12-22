@@ -9,6 +9,12 @@ defn main(version):
   download-releases: version
   update-brew: version
 
+defn sha256sum(file):
+  os =: System/getProperty("os.name")
+  cond:
+    os =~ /Mac\s?OS/: sh("shasum -a 256 $file")
+    else: sh("sha256sum $file")
+
 defn update-brew(version):
   releases =: releases(version)
 
@@ -23,7 +29,7 @@ defn update-brew(version):
   text =:
     reduce-kv _ text releases:
       fn(text key file):
-        sha256 =: sh("sha256sum $file").out:words.0
+        sha256 =: sha256sum(file).out:words.0
         text: .replace(key sha256)
 
   say: "Updating homebrew-yamlscript/ys.rb"
